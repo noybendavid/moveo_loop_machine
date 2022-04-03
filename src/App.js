@@ -36,8 +36,8 @@ function App() {
     const [isReady, setIsReady] = useState(false);
     const [duration, setDuration] = useState(0);
 
-    //All rows splits to two Columns - left and right
-    //Right holds the progress of the audio with the cursor
+    
+    //Update the Cursor position with the current time of the audio
     const RightPanel = () => {
 
         const updateTime = value => {
@@ -76,6 +76,9 @@ function App() {
                 if (shouldLoop && timeLeft <= 1 && timeLeft > 0) {
                     this.currentTime = 0;
                     this.play();
+                }
+                if(item.audio.ended === true){
+                    setPercentage(1);
                 }
             };
             return item;
