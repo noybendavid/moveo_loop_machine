@@ -1,7 +1,6 @@
-import './App.css';
-import {React, useEffect, useRef, useState} from 'react';
-import Player from './Player';
-import Controls from './Controls';
+import './App.scss';
+import {React, useEffect, useState} from 'react';
+import Controller from './Controller';
 import Drums from './audioclips/DRUMS.mp3'
 import He from './audioclips/HE.mp3'
 import Uuho from './audioclips/UUHO.mp3'
@@ -11,49 +10,83 @@ import High from './audioclips/HIGH.mp3'
 import B from './audioclips/B.mp3'
 import All from './audioclips/all.mp3'
 import shake from './audioclips/shake.mp3'
+import RightPanel from './RightPanel';
+import LeftPanel from './LeftPanel'
 
 
-const audioclips = [
-  {sound: Drums, lable: 'Drums', color: 'lightblue'},
-  {sound: He, lable: 'He', color: 'lightcoral'},
-  {sound: Uuho, lable: 'Uuho', color: 'lightgoldenrodyellow'},
-  {sound: Lead, lable: 'Lead', color: 'lightgreen'},
-  {sound: Jibrish, lable: 'Jibrish', color: 'lightpink'},
-  {sound: High, lable: 'High', color: 'lightseagreen'},
-  {sound: B, lable: 'B', color: 'lightsalmon'},
-  {sound: All , lable: 'All', color: 'lightgrey'},
-  {sound: shake, lable:'shake', color: 'lightskyblue'}
+const audioClips = [
+    {src: Drums, label: 'Drums', color: 'lightblue'},
+    {src: He, label: 'He', color: 'lightcoral'},
+    {src: Uuho, label: 'Uuho', color: 'lightgoldenrodyellow'},
+    {src: Lead, label: 'Lead', color: 'lightgreen'},
+    {src: Jibrish, label: 'Jibrish', color: 'lightpink'},
+    {src: High, label: 'High', color: 'lightseagreen'},
+    {src: B, label: 'B', color: 'lightsalmon'},
+    {src: All, label: 'All', color: 'lightgrey'},
+    {src: shake, label: 'shake', color: 'lightskyblue'}
 ];
 
+
 function App() {
-
-  const [clips, setClips] = useState(audioclips);
-
-
- useEffect(()=>{
-   console.log('hello');
-   clips.map((item) => {item.audio = new Audio(item.sound)});
-  
-  //  playSoundsHanlder = () => { audioclips.map((item) => item.audio.play())}
-   // playSoundsHanlder();item.isMute = false;
- },[]) 
+    const [clips, setClips] = useState(audioClips || []);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [shouldLoop, setShouldLoop] = useState(false);
+    const [isReady, setIsReady] = useState(false);
+    const [duration, setDuration] = useState(0);
 
 
   
 
-  return (
-    <div className="App">
-      <h2>LoopMachine </h2>
-       <div>
-         {console.log(clips)}{
-         clips.map((item) => 
-         <Player item={item}/>)}
-       </div>
-       <div>
-         <Controls clips={clips} />
-       </div>
-      </div>
-  );
+    useEffect(() => {
+        const updatedClips = clips.map(item => {
+            item.audio = new Audio(item.src);
+            item.audio.onloadeddata = function () {
+                setDuration(this.duration);
+                setIsReady(true);
+            };
+            item.audio.preload = 'metadata';
+            return item;
+        });
+
+        setClips(updatedClips);
+    }, []);
+
+    useEffect(() => {
+        const updatedList = clips.map(item => {
+            item.audio.ontimeupdate = function () {
+                const timeLeft = this.duration - this.currentTime;
+                if (shouldLoop && timeLeft <= 1 && timeLeft > 0) {
+                    this.currentTime = 0;
+                    this.play();
+                }
+            };
+            return item;
+        });
+        setClips(updatedList);
+    }, [isPlaying, shouldLoop]);
+    return (
+        <div className="App">
+            <h2>LoopMachine</h2>
+            {isReady ?
+                <div className="container">
+                    <div className="row player">
+                        <LeftPanel clips={clips} setClips={setClips}/>
+                        <RightPanel isPlaying={isPlaying} shouldLoop={shouldLoop} duration={duration}
+                         clips={clips}/>
+                    </div>
+                    <div className="row controller">
+                        <Controller
+                            clips={clips}
+                            isPlaying={isPlaying}
+                            setIsPlaying={setIsPlaying}
+                            shouldLoop={shouldLoop}
+                            setShouldLoop={setShouldLoop}/>
+                    </div>
+                </div> :
+                <div>loading...</div>
+            }
+        </div>
+    );
 }
 
 export default App;

@@ -1,0 +1,90 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes move-cursor {
+  from {left: 13px;}
+  to {left: calc(100% - 13px);}
+}
+
+.player {
+  border: 1px solid blue;
+
+  .left-panel {
+    border-right: 1px solid blue;
+
+    .label {
+      font-size: 1rem;
+      text-align: center;
+      margin: 5px;
+      padding: 5px;
+    }
+    .btn-play {
+      margin: 5px;
+      padding: 5px;
+      border-radius: 30px;
+      border: none;
+      font-size: 14px;
+      background-color: Transparent;
+    }
+  }
+
+  .right-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    .cursor {
+      height: 100%;
+      width: 1px;
+      background-color: black;
+      position: absolute;
+      animation-name: move-cursor;
+      animation-timing-function: linear;
+    }
+
+    .track-container {
+      min-height: 43px;
+      display: flex;
+      align-items: center;
+
+      .track {
+        min-height: 20px;
+        width: 100%;
+      }
+    }
+  }
+}
+
+
+.controller {
+  border: 1px solid blue;
+  border-top: 0;
+}
