@@ -1,31 +1,35 @@
-import React from 'react';
+import React from "react";
 import './App.scss'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faVolumeHigh, faVolumeMute} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faVolumeHigh, faVolumeMute} from '@fortawesome/free-solid-svg-icons';
 
-const Player = ({clips , setClips}) => {
+//LeftPanel handle and present the name of the song 
+//And handle with mute btn 
 
-
+const LeftPanel = ({clips, setClips}) => {
   const onMute = label => e => {
-      setClips(clips.map(item => {
+      return setClips(clips.map(item => {
           if (item.label === label)
               item.audio.muted = !item.audio.muted;
           return item;
       }))
   };
-  return <div className='left-panel col-4'>
+
+  return (
+  <div className='left-panel col-4'>
       {clips.map(soundTrack => {
           return (<div key={soundTrack.label} className="row">
               <div className="col label">{soundTrack.label}</div>
               <div className="col">
                   <button className="btn-play" onClick={onMute(soundTrack.label)}>
-                      {!soundTrack.audio.muted ? <FontAwesomeIcon icon={faVolumeHigh}/> :
-                          <FontAwesomeIcon icon={faVolumeMute}/>}
+                      {!soundTrack.audio.muted ? <FontAwesomeIcon icon={faVolumeHigh} style={{color: "white"}}/> :
+                          <FontAwesomeIcon icon={faVolumeMute} className="redcolor" />}
                   </button>
               </div>
           </div>)
       })}
   </div>
+  );
 }
 
-export default Player;
+export default LeftPanel;

@@ -1,23 +1,26 @@
 import './App.scss'
-import React from 'react';
-
-const Cursor = ({ duration, isPlaying, shouldLoop}) => {
+import React, {useState} from 'react';
 
 
+const Cursor = ({position, onTimeChange }) => {
+    const [value, setValue] = useState(position);
+    
+    //triggered when the user releases the mouse
+    const onChange = e => {
+        onTimeChange(e.target.value);
+        setValue(e.target.value);
+    };
 
-  return(
-      <div className="cursor"
-      // onDrop={e => handleDrop(e)}
-      // onDragOver={e => handleDragOver(e)}
-      // onDragEnter={e => handleDragEnter(e)}
-      // onDragLeave={e => handleDragLeave(e)}
-          style={{
-            animationPlayState: isPlaying ? 'running' : 'paused',
-            animationIterationCount: shouldLoop ? 'infinite' : 1,
-            animationDuration: Math.floor(duration) + 's',
-          }}>
-      </div>
-  );
+    return (
+        <input className="cursor"
+               value={value}
+               step='0.01'
+               min="1" max="100"
+               onChange={onChange}
+               type="range"
+        >
+        </input>
+    );
 
 }
 
